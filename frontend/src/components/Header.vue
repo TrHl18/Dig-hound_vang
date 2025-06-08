@@ -1,6 +1,7 @@
 <script setup>
 import whiteLogo from "../assets/img/digitalhoundlogo.png";
 import { ref } from "vue";
+import { UserIcon, UserPlusIcon } from "@heroicons/vue/24/outline"; // <-- Add this
 
 const showDropdown = ref(false);
 const tools = ref([
@@ -22,21 +23,31 @@ const tools = ref([
 
       <ul class="flex space-x-8 relative ml-auto mr-[10%]">
         <li>
-          <a href="#hero" class="hover:text-blue-400 transition-colors">Home</a>
-        </li>
-        <li>
-          <a href="#features" class="hover:text-blue-400 transition-colors"
-            >Features</a
+          <router-link
+            :to="{ path: '/', hash: '#hero' }"
+            class="hover:text-blue-400 transition-colors"
+            >Home</router-link
           >
         </li>
         <li>
-          <a href="#about" class="hover:text-blue-400 transition-colors"
-            >About</a
+          <router-link
+            :to="{ path: '/', hash: '#features' }"
+            class="hover:text-blue-400 transition-colors"
+            >Features</router-link
           >
         </li>
         <li>
-          <a href="#footer" class="hover:text-blue-400 transition-colors"
-            >Contact</a
+          <router-link
+            :to="{ path: '/', hash: '#about' }"
+            class="hover:text-blue-400 transition-colors"
+            >About</router-link
+          >
+        </li>
+        <li>
+          <router-link
+            :to="{ path: '/', hash: '#footer' }"
+            class="hover:text-blue-400 transition-colors"
+            >Contact</router-link
           >
         </li>
 
@@ -89,6 +100,16 @@ const tools = ref([
             </ul>
           </transition>
         </li>
+        <li>
+          <router-link
+            to="/signin?mode=signin"
+            class="flex items-center gap-1 hover:text-blue-400 transition-colors"
+          >
+            <UserIcon class="h-5 w-5" />
+            Sign In
+          </router-link>
+        </li>
+        
       </ul>
     </nav>
     <div class="h-18"></div>

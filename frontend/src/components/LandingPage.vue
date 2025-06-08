@@ -1,8 +1,8 @@
 <template>
   <main>
-    <section id="hero" class="scroll-mt-20"><HeroSection /></section>
-    <section id="features" class="scroll-mt-20"><FeaturesSection /></section>
-    <section id="about" class="scroll-mt-20"><AboutSection /></section>
+    <section id="hero" class="scroll-mt-24"><HeroSection /></section>
+    <section id="features" class="scroll-mt-24"><FeaturesSection /></section>
+    <section id="about" class="scroll-mt-24"><AboutSection /></section>
   </main>
 </template>
 
