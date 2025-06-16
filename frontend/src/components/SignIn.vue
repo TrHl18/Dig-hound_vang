@@ -84,11 +84,13 @@
 </template>
 
 <script setup>
+import { authState } from '../authBus.js';
 import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import signBg from '../assets/img/signbg.jpg'
 
 const route = useRoute()
+const router = useRouter()
 const email = ref('')
 const password = ref('')
 const isSignUp = ref(false)
@@ -102,6 +104,7 @@ onMounted(() => {
 const toggleAuthMode = () => {
   isSignUp.value = !isSignUp.value
   error.value = null
+  router.replace({ path: '/signin', query: { mode: isSignUp.value ? 'signup' : 'signin' } })
 }
 
 async function handleSubmit() {
@@ -109,22 +112,30 @@ async function handleSubmit() {
   isLoading.value = true
 
   try {
-    // Basic client-side validation
     if (!email.value || !password.value) {
       throw new Error('Please fill in all fields')
     }
-
     if (isSignUp.value && password.value.length < 8) {
       throw new Error('Password must be at least 8 characters')
     }
 
-    // In a real app, you would call your backend API here
     const response = await authenticateUser(email.value, password.value)
-    
-    // Handle successful authentication
     console.log('Authentication successful:', response)
-    
-    // Redirect or emit event to parent component
+
+    if (isSignUp.value) {
+      // Si fue registro exitoso, cambia a modo login
+      isSignUp.value = false
+      router.replace({ path: '/signin', query: { mode: 'signin' } })
+      error.value = 'Account created! You can now sign in.'
+      password.value = ''
+    } else {
+      // Si fue login exitoso, guarda el token en el estado global y redirige a Landing
+      if (response.token) {
+        localStorage.setItem('token', response.token)
+        authState.token = response.token
+      }
+      router.push({ path: '/landing' })
+    }
   } catch (err) {
     error.value = err.message || 'Authentication failed. Please try again.'
   } finally {
@@ -132,17 +143,19 @@ async function handleSubmit() {
   }
 }
 
-// Mock authentication function - REPLACE WITH REAL API CALL
 async function authenticateUser(email, password) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      // Simulate network delay
-      if (email === 'test@example.com' && password === 'password123') {
-        resolve({ success: true, token: 'mock-jwt-token' })
-      } else {
-        reject(new Error('Invalid credentials'))
-      }
-    }, 1500)
+  const url = isSignUp.value
+    ? 'http://localhost:4000/api/auth/signup'
+    : 'http://localhost:4000/api/auth/signin'
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
   })
+  const data = await response.json()
+  if (!response.ok) {
+    throw new Error(data.error || 'Authentication failed')
+  }
+  return data
 }
 </script>
