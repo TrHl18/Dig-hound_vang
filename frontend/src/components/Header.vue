@@ -1,17 +1,43 @@
 <script setup>
 import whiteLogo from "../assets/img/digitalhoundlogo.png";
-import { ref } from "vue";
-import { UserIcon, UserPlusIcon } from "@heroicons/vue/24/outline"; // <-- Add this
+import { ref, computed } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import { UserIcon, ArrowLeftOnRectangleIcon } from "@heroicons/vue/24/outline";
+import { authState } from '../authBus.js';
 
 const showDropdown = ref(false);
-const tools = ref([
-  { name: "IP Checker", link: "#tool1" },
-  // Add more tools as needed
-]);
+const router = useRouter();
+const route = useRoute();
+
+const hideHeader = computed(() => route.path.startsWith('/signin'));
+const isAuthenticated = computed(() => !!authState.token);
+
+const userEmail = computed(() => {
+  if (!authState.token) return null;
+  try {
+    const payload = JSON.parse(atob(authState.token.split('.')[1]));
+    return payload.email;
+  } catch {
+    return null;
+  }
+});
+
+function signOut() {
+  localStorage.removeItem('token');
+  authState.token = null;
+  router.push('/signin');
+}
+
+// Sincronización si el token cambia en otra pestaña
+window.addEventListener('storage', (event) => {
+  if (event.key === 'token') {
+    authState.token = event.newValue;
+  }
+});
 </script>
 
 <template>
-  <header>
+  <header v-if="!hideHeader">
     <nav
       class="fixed top-0 left-0 w-full z-50 bg-gradient-to-br from-gray-900/100 to-blue-900/100 text-white py-3 px-8 flex items-center shadow"
     >
@@ -24,34 +50,30 @@ const tools = ref([
       <ul class="flex space-x-8 relative ml-auto mr-[10%]">
         <li>
           <router-link
-            :to="{ path: '/', hash: '#hero' }"
+            :to="{ path: '/landing', hash: '#hero' }"
             class="hover:text-blue-400 transition-colors"
-            >Home</router-link
-          >
+            >Home</router-link>
         </li>
         <li>
           <router-link
-            :to="{ path: '/', hash: '#features' }"
+            :to="{ path: '/landing', hash: '#features' }"
             class="hover:text-blue-400 transition-colors"
-            >Features</router-link
-          >
+            >Features</router-link>
         </li>
         <li>
           <router-link
-            :to="{ path: '/', hash: '#about' }"
+            :to="{ path: '/landing', hash: '#about' }"
             class="hover:text-blue-400 transition-colors"
-            >About</router-link
-          >
+            >About</router-link>
         </li>
         <li>
           <router-link
-            :to="{ path: '/', hash: '#footer' }"
+            :to="{ path: '/landing', hash: '#footer' }"
             class="hover:text-blue-400 transition-colors"
-            >Contact</router-link
-          >
+            >Contact</router-link>
         </li>
 
-        <!-- Tools Dropdown -->
+        <!-- Herramientas -->
         <li
           class="relative"
           @mouseenter="showDropdown = true"
@@ -100,7 +122,9 @@ const tools = ref([
             </ul>
           </transition>
         </li>
-        <li>
+
+        <!-- Autenticación -->
+        <li v-if="!isAuthenticated">
           <router-link
             to="/signin?mode=signin"
             class="flex items-center gap-1 hover:text-blue-400 transition-colors"
@@ -109,7 +133,17 @@ const tools = ref([
             Sign In
           </router-link>
         </li>
-        
+        <li v-else class="flex items-center gap-2">
+          <span class="text-sm text-blue-200 font-semibold" v-if="userEmail">{{ userEmail }}</span>
+          <button
+            @click="signOut"
+            class="flex items-center gap-1 hover:text-blue-400 transition-colors"
+            title="Sign Out"
+          >
+            <ArrowLeftOnRectangleIcon class="h-5 w-5" />
+            Sign Out
+          </button>
+        </li>
       </ul>
     </nav>
     <div class="h-18"></div>
