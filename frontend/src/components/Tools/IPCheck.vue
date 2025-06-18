@@ -78,7 +78,7 @@
       <div class="bg-gray-900/50 p-6 rounded-lg border border-blue-900/50">
         <h2 class="text-xl font-semibold text-blue-300 mb-4 flex items-center gap-2">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002[...]"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
           </svg>
           IP Threat Analysis
         </h2>
@@ -178,28 +178,36 @@
   <div v-if="loadingHistory" class="text-gray-400">Loading history...</div>
   <div v-else-if="historyError" class="text-red-400">{{ historyError }}</div>
   <div v-else-if="!history.length" class="text-gray-400">No history yet.</div>
-  <ul v-else class="divide-y divide-blue-900/30 rounded-lg bg-gray-900/30">
+  <ul v-else class="divide-y divide-cyan-800 rounded-lg bg-gray-900/80 shadow">
     <li
       v-for="item in history"
       :key="item._id"
-      class="py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-1 px-4 hover:bg-blue-900/10 transition"
+      class="py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-1 px-4 hover:bg-cyan-900/40 transition"
     >
-      <span class="font-mono text-blue-300 text-lg">{{ item.ip }}</span>
-      <span class="text-gray-400 text-xs">
+      <span class="font-mono text-cyan-200 text-lg">{{ item.ip }}</span>
+      <span class="text-cyan-400 text-xs">
         {{ new Date(item.createdAt).toLocaleString() }}
       </span>
-      <span class="text-gray-500 text-xs">
+      <span class="text-cyan-300 text-xs">
         {{ item.geo?.country ?? 'Unknown' }}{{ item.geo?.city ? ', ' + item.geo.city : '' }}
       </span>
-      <span class="text-gray-500 text-xs">
-        Abuse score: <span :class="{
+      <span class="text-xs">
+        Abuse score:
+        <span :class="{
           'text-green-400': (item.abuse?.abuseConfidenceScore ?? 0) < 30,
-          'text-yellow-400': (item.abuse?.abuseConfidenceScore ?? 0) >= 30 && (item.abuse?.abuseConfidenceScore ?? 0) < 70,
+          'text-yellow-300': (item.abuse?.abuseConfidenceScore ?? 0) >= 30 && (item.abuse?.abuseConfidenceScore ?? 0) < 70,
           'text-red-400': (item.abuse?.abuseConfidenceScore ?? 0) >= 70
         }">
           {{ item.abuse?.abuseConfidenceScore ?? 'N/A' }}
         </span>
       </span>
+      <button
+        @click="deleteHistory(item._id)"
+        class="ml-2 px-2 py-1 text-xs bg-red-700 hover:bg-red-800 text-white rounded transition"
+        title="Eliminar"
+      >
+        Eliminar
+      </button>
     </li>
   </ul>
 </div>
@@ -301,6 +309,20 @@ async function checkIP() {
     abuseError.value = err.response?.data?.error || 'Error analyzing IP';
   }
   checking.value = false
+}
+
+async function deleteHistory(id) {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('Debes iniciar sesión');
+    await axios.delete(`${API_BASE}/history/${id}`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    // Quita el registro eliminado del array local
+    history.value = history.value.filter(item => item._id !== id);
+  } catch (err) {
+    historyError.value = err.response?.data?.error || 'No se pudo borrar el registro';
+  }
 }
 
 function copyToClipboard(text) {

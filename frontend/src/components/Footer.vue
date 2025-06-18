@@ -23,15 +23,15 @@ import whiteLogo from '../assets/img/digitalhoundlogo.png'
       <div class="flex-1 flex flex-col items-center md:items-start mb-8 md:mb-0">
         <div class="font-bold text-lg mb-3">Other Links</div>
         <ul class="space-y-2 text-gray-200">
-          <li><a href="#" class="hover:text-blue-400">About Us</a></li>
-          <li><a href="#" class="hover:text-blue-400">Conctact Us</a></li>
-          <li><a href="#" class="hover:text-blue-400">Terms and Coditions</a></li>
-          <li><a href="#" class="hover:text-blue-400">Privacy Policy</a></li>
+          <li><a href="#" class="hover:text-blue-400">Sobre Nosotros</a></li>
+          <li><a href="#" class="hover:text-blue-400">Contáctanos</a></li>
+          <li><a href="#" class="hover:text-blue-400">Términos y Condiciones</a></li>
+          <li><a href="#" class="hover:text-blue-400">Política de Privacidad</a></li>
         </ul>
       </div>
       <!--Tools-->
       <div class="flex-1 flex flex-col items-center md:items-start mb-8 md:mb-0">
-        <div class="font-bold text-lg mb-3">Tools</div>
+        <div class="font-bold text-lg mb-3">Herramientas</div>
         <ul class="space-y-2 text-gray-200">
           <li><a href="#" class="hover:text-blue-400">IP Checker</a></li>
           <li><a href="#" class="hover:text-blue-400">Url Safety</a></li>
@@ -41,7 +41,7 @@ import whiteLogo from '../assets/img/digitalhoundlogo.png'
       </div>
       <!-- Support -->
       <div class="flex-1 flex flex-col items-center md:items-start">
-        <div class="font-bold text-lg mb-3">Support</div>
+        <div class="font-bold text-lg mb-3">Soporte</div>
         <div class="text-gray-200 mb-1">+11 2 333 456</div>
         <div class="text-gray-200 mb-1">digitalhoundsupports@example.com</div>
         <div class="text-gray-200">www.digitalhound.com</div>

@@ -1,16 +1,19 @@
+// Importación de módulos necesarios: Express, modelo de base de datos, análisis de IPs, DNS y JWT
 const express = require('express');
 const IpLookup = require('../models/IpLookup');
 const router = express.Router();
 const analyzeIP = require('../utils/ipAnalysis');
 const dns = require('dns').promises;
-const jwt = require('jsonwebtoken'); // <-- IMPORTANTE
+const jwt = require('jsonwebtoken');
 
-// Middleware para autenticar y extraer userId del JWT
+// Middleware para proteger rutas mediante autenticación con JWT
 function requireAuth(req, res, next) {
   const auth = req.headers.authorization;
   if (!auth) return res.status(401).json({ error: 'No token provided' });
+
   const token = auth.split(' ')[1];
   if (!token) return res.status(401).json({ error: 'Invalid token' });
+
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
     req.userId = payload.userId;
@@ -20,39 +23,31 @@ function requireAuth(req, res, next) {
   }
 }
 
-// POST /api/resolve-domain
+// Ruta para obtener las direcciones IP asociadas a un dominio
 router.post('/resolve-domain', async (req, res) => {
   const { domain } = req.body;
   try {
-    const addresses = await dns.resolve4(domain); // Usa dns.resolve4 directamente
+    const addresses = await dns.resolve4(domain);
     res.json({ ips: addresses });
-  } catch (err) {
+  } catch {
     res.status(400).json({ error: 'Unable to resolve domain' });
   }
 });
 
-// POST /api/check-ip
+// Ruta protegida para analizar una IP: verifica si ya está guardada, si no, la analiza y guarda
 router.post('/check-ip', requireAuth, async (req, res) => {
   const { ip } = req.body;
-
   if (!ip) return res.status(400).json({ error: 'IP is required' });
 
-  // Busca en la base de datos antes de llamar las APIs externas
   let lookup = await IpLookup.findOne({ ip, userId: req.userId });
   if (lookup) {
     return res.json({
-      data: {
-        ...lookup.geo,
-        ...lookup.abuse,
-        ipAddress: ip,
-        cached: true
-      }
+      data: { ...lookup.geo, ...lookup.abuse, ipAddress: ip, cached: true }
     });
   }
 
   try {
     const data = await analyzeIP(ip);
-    // Guarda el resultado para cache y uso futuro
     await IpLookup.create({
       ip,
       userId: req.userId,
@@ -74,19 +69,13 @@ router.post('/check-ip', requireAuth, async (req, res) => {
         lastReportedAt: data.lastReportedAt,
       }
     });
-    res.json({
-      data: {
-        ...data,
-        ipAddress: ip,
-        cached: false
-      }
-    });
+    res.json({ data: { ...data, ipAddress: ip, cached: false } });
   } catch (err) {
     res.status(400).json({ error: 'Error analyzing IP', details: err.message });
   }
 });
 
-// GET /api/history
+// Ruta protegida para mostrar el historial de IPs consultadas por el usuario
 router.get('/history', requireAuth, async (req, res) => {
   const history = await IpLookup.find({ userId: req.userId })
     .sort({ createdAt: -1 })
@@ -94,4 +83,18 @@ router.get('/history', requireAuth, async (req, res) => {
   res.json({ history });
 });
 
+// Ruta para borrar un análisis del historial por su ID
+router.delete('/history/:id', requireAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    // Solo borra si el registro es del usuario autenticado
+    const deleted = await IpLookup.findOneAndDelete({ _id: id, userId: req.userId });
+    if (!deleted) return res.status(404).json({ error: 'Registro no encontrado o no autorizado' });
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: 'No se pudo borrar el registro' });
+  }
+});
+
+// Exporta el router para integrarlo en el servidor principal
 module.exports = router;

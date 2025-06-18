@@ -52,25 +52,25 @@ window.addEventListener('storage', (event) => {
           <router-link
             :to="{ path: '/landing', hash: '#hero' }"
             class="hover:text-blue-400 transition-colors"
-            >Home</router-link>
+            >Inicio</router-link>
         </li>
         <li>
           <router-link
             :to="{ path: '/landing', hash: '#features' }"
             class="hover:text-blue-400 transition-colors"
-            >Features</router-link>
+            >Funciones</router-link>
         </li>
         <li>
           <router-link
             :to="{ path: '/landing', hash: '#about' }"
             class="hover:text-blue-400 transition-colors"
-            >About</router-link>
+            >Sobre Nosotros</router-link>
         </li>
         <li>
           <router-link
             :to="{ path: '/landing', hash: '#footer' }"
             class="hover:text-blue-400 transition-colors"
-            >Contact</router-link>
+            >Contacto</router-link>
         </li>
 
         <!-- Herramientas -->
