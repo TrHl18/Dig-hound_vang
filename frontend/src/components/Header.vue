@@ -119,6 +119,14 @@ window.addEventListener('storage', (event) => {
                   IP Checker
                 </router-link>
               </li>
+              <li>
+                <router-link
+                  to="/urlscanner"
+                  class="block px-4 py-2 hover:bg-blue-800 transition-colors"
+                >
+                  URL Scanner
+                </router-link>
+              </li>
             </ul>
           </transition>
         </li>

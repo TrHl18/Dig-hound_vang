@@ -5,7 +5,7 @@
       <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300 mb-2">
         Digital Hound IP Intelligence
       </h1>
-      <p class="text-gray-400">Comprehensive IP reputation and threat analysis</p>
+      <p class="text-gray-400"> Check for IP Reputation and Threat Analysis</p>
     </div>
 
     <!-- Dual Input Sections -->
@@ -113,83 +113,56 @@
     </div>
 
     <!-- Results Panel -->
-    <div v-if="abuseResult" class="bg-gray-900 rounded-xl border border-blue-900/50 overflow-hidden">
+    <div v-if="abuseResult && abuseResult.data" class="bg-blue-950 rounded-xl border border-cyan-400 overflow-hidden mt-8">
       <!-- Result Header -->
-      <div class="bg-gradient-to-r from-blue-900/50 to-blue-900/20 p-4 border-b border-blue-900/50 flex items-center justify-between">
+      <div class="bg-gradient-to-r from-cyan-700 to-blue-800 p-4 border-b border-cyan-400 flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <div class="p-2 bg-blue-900/30 rounded-lg">
-            <svg class="w-6 h-6 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 0[...]" />
+          <div class="p-2 bg-cyan-800 rounded-lg">
+            <svg class="w-6 h-6 text-cyan-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
             </svg>
           </div>
           <div>
-            <h3 class="font-bold text-white">{{ abuseResult.data.ipAddress }}</h3>
-            <p class="text-sm text-blue-300">{{ abuseResult.data.domain || 'No domain associated' }}</p>
+            <h3 class="font-bold text-cyan-200 text-lg">{{ abuseResult.data.ipAddress }}</h3>
+            <p class="text-sm text-cyan-300">{{ abuseResult.data.domain || 'No domain associated' }}</p>
+            <p class="text-xs text-cyan-400">{{ abuseResult.data.usageType }}</p>
           </div>
         </div>
-        <div class="flex items-center gap-2">
-          <div class="text-right">
-            <span class="text-xs text-gray-400 block">Abuse Score</span>
-            <span class="font-bold" :class="{
-              'text-green-400': abuseResult.data.abuseConfidenceScore < 30,
-              'text-yellow-400': abuseResult.data.abuseConfidenceScore >= 30 && abuseResult.data.abuseConfidenceScore < 70,
-              'text-red-400': abuseResult.data.abuseConfidenceScore >= 70
-            }">
-              {{ abuseResult.data.abuseConfidenceScore }}%
+        <div class="text-right">
+          <span class="text-xs text-cyan-200 block">Abuse Score</span>
+          <span class="text-2xl font-bold text-yellow-300">{{ abuseResult.data.abuseConfidenceScore }}</span>
+        </div>
+      </div>
+
+      <div class="p-4 text-base text-cyan-100 space-y-2 bg-blue-900/80">
+        <p>
+          <strong class="text-cyan-300">Country:</strong>
+          <span class="inline-flex items-center gap-1">
+            <span>{{ abuseResult.data.countryName || abuseResult.data.countryCode || 'N/A' }}</span>
+            <span v-if="abuseResult.data.countryCode">
+              <img
+                :src="`https://flagcdn.com/24x18/${abuseResult.data.countryCode.toLowerCase()}.png`"
+                :alt="abuseResult.data.countryCode"
+                class="inline-block ml-1 rounded-sm border border-gray-700"
+                width="24"
+                height="18"
+              />
             </span>
-          </div>
-          <div class="h-8 w-px bg-blue-900/50 mx-2"></div>
-          <div class="text-right">
-            <span class="text-xs text-gray-400 block">Reports</span>
-            <span class="font-bold text-white">{{ abuseResult.data.totalReports }}</span>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Detailed Results -->
-      <div class="grid md:grid-cols-2 gap-6 p-6">
-        <div class="space-y-4">
-          <div>
-            <h4 class="text-sm font-semibold text-gray-400 mb-1">NETWORK INFORMATION</h4>
-            <div class="bg-gray-800/50 rounded-lg p-4 space-y-3">
-              <div class="flex justify-between">
-                <span class="text-gray-400">ISP</span>
-                <span class="font-mono text-right">{{ abuseResult.data.isp || 'Unknown' }}</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-gray-400">Usage Type</span>
-                <span class="font-mono text-right">{{ abuseResult.data.usageType || 'Unknown' }}</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-gray-400">Hostnames</span>
-                <span class="font-mono text-right">{{ (abuseResult.data.hostnames && abuseResult.data.hostnames.length) ? abuseResult.data.hostnames[0] : (abuseResult.data.domain || 'No domain associated') }}</span>
-              </div>
-            </div>
+          </span>
+        </p>
+        <p><strong class="text-cyan-300">ISP:</strong> {{ abuseResult.data.isp || 'N/A' }}</p>
+        <p><strong class="text-cyan-300">Usage Type:</strong> {{ abuseResult.data.usageType || 'N/A' }}</p>
+        <p><strong class="text-cyan-300">Total Reports:</strong> {{ abuseResult.data.totalReports }}</p>
+        <p><strong class="text-cyan-300">Last Reported:</strong> {{ abuseResult.data.lastReportedAt ? new Date(abuseResult.data.lastReportedAt).toLocaleString() : 'Never' }}</p>
+        <div v-if="abuseResult.data.reports && abuseResult.data.reports.length" class="mt-4">
+          <strong class="block mb-1 text-cyan-200">Latest Report:</strong>
+          <div class="bg-cyan-900/70 rounded p-3 text-xs text-cyan-100">
+            <p><strong>Date:</strong> {{ new Date(abuseResult.data.reports[0].reportedAt).toLocaleString() }}</p>
+            <p><strong>Comment:</strong> {{ abuseResult.data.reports[0].comment || 'No comment' }}</p>
+            <p><strong>Reporter Country:</strong> {{ abuseResult.data.reports[0].reporterCountryName || abuseResult.data.reports[0].reporterCountryCode }}</p>
           </div>
         </div>
-        
-        <div class="space-y-4">
-          <div>
-            <h4 class="text-sm font-semibold text-gray-400 mb-1">GEOGRAPHIC DATA</h4>
-            <div class="bg-gray-800/50 rounded-lg p-4 space-y-3">
-              <div class="flex justify-between">
-                <span class="text-gray-400">Country</span>
-                <span class="font-mono text-right">{{ abuseResult.data.country || 'Unknown' }}</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-gray-400">Region</span>
-                <span class="font-mono text-right">{{ abuseResult.data.region || 'Unknown' }}</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-gray-400">City</span>
-                <span class="font-mono text-right">{{ abuseResult.data.city || 'Unknown' }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div v-if="abuseResult.data.lastReportedAt" class="p-4 text-xs text-gray-400 border-t border-blue-900/50">
-        Last reported at: {{ abuseResult.data.lastReportedAt }}
       </div>
     </div>
   </div>

@@ -12,6 +12,9 @@
       </h2>
 
       <!-- Error Message -->
+      <div v-if="success" class="mb-4 p-3 bg-green-100 text-green-700 rounded text-sm">
+        {{ success }}
+      </div>
       <div v-if="error" class="mb-4 p-3 bg-red-100 text-red-700 rounded text-sm">
         {{ error }}
       </div>
@@ -96,6 +99,7 @@ const password = ref('')
 const isSignUp = ref(false)
 const isLoading = ref(false)
 const error = ref(null)
+const success = ref(null)
 
 onMounted(() => {
   isSignUp.value = route.query.mode === 'signup'
@@ -109,6 +113,7 @@ const toggleAuthMode = () => {
 
 async function handleSubmit() {
   error.value = null
+  success.value = null
   isLoading.value = true
 
   try {
@@ -126,7 +131,7 @@ async function handleSubmit() {
       // Si fue registro exitoso, cambia a modo login
       isSignUp.value = false
       router.replace({ path: '/signin', query: { mode: 'signin' } })
-      error.value = 'Account created! You can now sign in.'
+      success.value = 'Account created! You can now sign in.'
       password.value = ''
     } else {
       // Si fue login exitoso, guarda el token en el estado global y redirige a Landing
@@ -134,6 +139,7 @@ async function handleSubmit() {
         localStorage.setItem('token', response.token)
         authState.token = response.token
       }
+      success.value = '¡Inicio de sesión exitoso!'
       router.push({ path: '/landing' })
     }
   } catch (err) {

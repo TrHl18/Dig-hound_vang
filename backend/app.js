@@ -3,6 +3,7 @@ const express = require('express');
 const  db  = require('./config/db');
 const authRouter = require('./routes/auth');
 const ipCheckRouter = require('./routes/ipCheck');
+const urlScansRouter = require('./routes/urlScans');
 const cors = require('cors');
 const dns = require('dns').promises;
 
@@ -11,6 +12,7 @@ app.use(cors());
 app.use(express.json());
 app.use('/api', ipCheckRouter);
 app.use('/api/auth', authRouter);
+app.use('/api', urlScansRouter);
 
 db()
 
