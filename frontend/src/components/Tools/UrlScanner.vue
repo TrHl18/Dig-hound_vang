@@ -36,23 +36,23 @@
       <div class="p-4 text-base text-cyan-100 space-y-2 bg-blue-900/80">
         <p>
           <strong class="text-cyan-300">URL:</strong>
-          <span>{{ scanResult.links?.self || url }}</span>
+          <span>{{ url }}</span>
         </p>
         <p>
           <strong class="text-cyan-300">Malicioso:</strong>
-          <span class="text-red-400 font-bold">{{ scanResult.last_analysis_stats?.malicious ?? '-' }}</span>
+          <span class="text-red-400 font-bold">{{ scanResult.attributes?.last_analysis_stats?.malicious ?? '-' }}</span>
         </p>
         <p>
           <strong class="text-cyan-300">Sospechoso:</strong>
-          <span>{{ scanResult.last_analysis_stats?.suspicious ?? '-' }}</span>
+          <span>{{ scanResult.attributes?.last_analysis_stats?.suspicious ?? '-' }}</span>
         </p>
         <p>
           <strong class="text-cyan-300">Seguro:</strong>
-          <span class="text-green-400 font-bold">{{ scanResult.last_analysis_stats?.harmless ?? '-' }}</span>
+          <span class="text-green-400 font-bold">{{ scanResult.attributes?.last_analysis_stats?.harmless ?? '-' }}</span>
         </p>
         <p>
           <strong class="text-cyan-300">No detectado:</strong>
-          <span>{{ scanResult.last_analysis_stats?.undetected ?? '-' }}</span>
+          <span>{{ scanResult.attributes?.last_analysis_stats?.undetected ?? '-' }}</span>
         </p>
       </div>
     </div>
