@@ -2,7 +2,6 @@ const axios = require('axios');
 
 const ABUSEIPDB_API_KEY = process.env.ABUSEIPDB_API_KEY;
 
-// Geolocalización y datos de red (ip-api.com)
 async function getIPGeo(ip) {
   const url = `http://ip-api.com/json/${ip}?fields=status,message,country,regionName,city,isp,org,as,query`;
   const { data } = await axios.get(url);
@@ -18,7 +17,6 @@ async function getIPGeo(ip) {
   };
 }
 
-// Reputación y reportes (AbuseIPDB)
 async function getIPReports(ip) {
   const url = `https://api.abuseipdb.com/api/v2/check`;
   const { data } = await axios.get(url, {
@@ -46,7 +44,6 @@ async function analyzeIP(ip) {
     getIPGeo(ip),
     getIPReports(ip)
   ]);
-  // Merge datos (prioriza los de AbuseIPDB si hay duplicados)
   return { ...geo, ...abuse, ipAddress: ip };
 }
 

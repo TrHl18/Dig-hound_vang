@@ -4,7 +4,6 @@ import LandingPage from '../components/LandingPage.vue'
 import IPCheck from '../components/Tools/IPCheck.vue'
 import UrlScanner from '../components/Tools/UrlScanner.vue'
 
-// 1. Define tus rutas
 const routes = [
   { path: '/', redirect: '/signin' },
   { path: '/signin', name: 'SignIn', component: SignIn },
@@ -19,7 +18,6 @@ const router = createRouter({
   routes,
   scrollBehavior(to, from, savedPosition) {
     if (to.hash) {
-      // Always scroll to the element, even if only the hash changes
       return {
         el: to.hash,
         behavior: 'smooth',
@@ -32,13 +30,10 @@ const router = createRouter({
   },
 })
 
-// 3. Define rutas públicas explícitamente
 const publicPages = ['/signin']
 
-// 4. Guardia global de navegación
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
-  // Permite acceso libre a rutas públicas
   if (publicPages.includes(to.path)) {
     return next()
   }

@@ -8,9 +8,7 @@
       <p class="text-gray-400"> Check for IP Reputation and Threat Analysis</p>
     </div>
 
-    <!-- Dual Input Sections -->
     <div class="grid md:grid-cols-2 gap-6 mb-8">
-      <!-- Domain Resolution -->
       <div class="bg-gray-900/50 p-6 rounded-lg border border-blue-900/50">
         <h2 class="text-xl font-semibold text-blue-300 mb-4 flex items-center gap-2">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -38,7 +36,6 @@
           </button>
         </div>
         
-        <!-- Resolved IPs -->
         <div v-if="resolvedIPs.length" class="mt-4 space-y-2">
           <div class="text-sm text-gray-400 flex items-center gap-2">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,7 +99,7 @@
           </button>
         </div>
         
-        <!-- Analysis Results -->
+
         <div v-if="abuseError" class="mt-3 text-red-400 text-sm flex items-center gap-1">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -112,9 +109,8 @@
       </div>
     </div>
 
-    <!-- Results Panel -->
     <div v-if="abuseResult && abuseResult.data" class="bg-blue-950 rounded-xl border border-cyan-400 overflow-hidden mt-8">
-      <!-- Result Header -->
+   
       <div class="bg-gradient-to-r from-cyan-700 to-blue-800 p-4 border-b border-cyan-400 flex items-center justify-between">
         <div class="flex items-center gap-3">
           <div class="p-2 bg-cyan-800 rounded-lg">
@@ -167,7 +163,6 @@
     </div>
   </div>
 
-  <!-- User's IP Analysis History -->
 <div class="mt-12">
   <h2 class="text-xl font-bold text-blue-300 mb-4 flex items-center gap-2">
     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -210,9 +205,8 @@ import { ref } from 'vue'
 import axios from 'axios'
 import { onMounted } from 'vue';
 
-const API_BASE = 'http://localhost:4000/api' // Cambia si tu backend está en otro puerto o ruta
+const API_BASE = 'http://localhost:4000/api' 
 
-// Reactive state
 const history = ref([])
 const loadingHistory = ref(false)
 const historyError = ref(null)
@@ -305,7 +299,6 @@ async function checkIP() {
 
 function copyToClipboard(text) {
   navigator.clipboard.writeText(text)
-  // Puedes agregar notificación visual aquí si lo deseas
 }
 
 onMounted(() => {
@@ -314,7 +307,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }

@@ -16,7 +16,6 @@ app.use('/api', urlScansRouter);
 
 db()
 
-// POST /api/resolve-domain
 app.get('/api/resolve/:domain', async (req, res) => {
   try {
     const addresses = await dns.resolve4(req.params.domain);

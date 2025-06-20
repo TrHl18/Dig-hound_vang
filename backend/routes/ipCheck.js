@@ -1,4 +1,3 @@
-// Importación de módulos necesarios: Express, modelo de base de datos, análisis de IPs, DNS y JWT
 const express = require('express');
 const IpLookup = require('../models/IpLookup');
 const router = express.Router();
@@ -6,7 +5,6 @@ const analyzeIP = require('../utils/ipAnalysis');
 const dns = require('dns').promises;
 const jwt = require('jsonwebtoken');
 
-// Middleware para proteger rutas mediante autenticación con JWT
 function requireAuth(req, res, next) {
   const auth = req.headers.authorization;
   if (!auth) return res.status(401).json({ error: 'No token provided' });
@@ -23,7 +21,6 @@ function requireAuth(req, res, next) {
   }
 }
 
-// Ruta para obtener las direcciones IP asociadas a un dominio
 router.post('/resolve-domain', async (req, res) => {
   const { domain } = req.body;
   try {
@@ -34,7 +31,6 @@ router.post('/resolve-domain', async (req, res) => {
   }
 });
 
-// Ruta protegida para analizar una IP: verifica si ya está guardada, si no, la analiza y guarda
 router.post('/check-ip', requireAuth, async (req, res) => {
   const { ip } = req.body;
   if (!ip) return res.status(400).json({ error: 'IP is required' });
@@ -75,7 +71,6 @@ router.post('/check-ip', requireAuth, async (req, res) => {
   }
 });
 
-// Ruta protegida para mostrar el historial de IPs consultadas por el usuario
 router.get('/history', requireAuth, async (req, res) => {
   const history = await IpLookup.find({ userId: req.userId })
     .sort({ createdAt: -1 })
@@ -83,11 +78,9 @@ router.get('/history', requireAuth, async (req, res) => {
   res.json({ history });
 });
 
-// Ruta para borrar un análisis del historial por su ID
 router.delete('/history/:id', requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
-    // Solo borra si el registro es del usuario autenticado
     const deleted = await IpLookup.findOneAndDelete({ _id: id, userId: req.userId });
     if (!deleted) return res.status(404).json({ error: 'Registro no encontrado o no autorizado' });
     res.json({ success: true });
@@ -96,5 +89,4 @@ router.delete('/history/:id', requireAuth, async (req, res) => {
   }
 });
 
-// Exporta el router para integrarlo en el servidor principal
 module.exports = router;

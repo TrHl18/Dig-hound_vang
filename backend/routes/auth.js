@@ -11,15 +11,12 @@ router.post('/signup', async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ error: 'Missing fields' });
 
-    // Verifica si ya existe el usuario
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({ error: 'Email already registered' });
 
-    // Hashea el password
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({ email, password: hashedPassword });
 
-    // Opcional: Crea un JWT para sesión automática tras registro
     const token = jwt.sign({ userId: user._id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
 
     res.json({ success: true, token });

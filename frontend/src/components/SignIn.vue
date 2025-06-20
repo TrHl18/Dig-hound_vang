@@ -3,15 +3,14 @@
     class="min-h-screen flex items-center justify-center relative"
     :style="`background: url('${signBg}') center center / cover no-repeat;`"
   >
-    <!-- Dark Overlay -->
     <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
     <div class="relative bg-white bg-opacity-90 rounded-xl p-8 w-full max-w-md shadow-lg border border-blue-100">
-      <!-- Title -->
+      
       <h2 class="text-2xl font-semibold mb-6 text-center text-gray-800">
         {{ isSignUp ? 'Create an Account' : 'Welcome Back' }}
       </h2>
 
-      <!-- Error Message -->
+>
       <div v-if="success" class="mb-4 p-3 bg-green-100 text-green-700 rounded text-sm">
         {{ success }}
       </div>
@@ -19,7 +18,6 @@
         {{ error }}
       </div>
 
-      <!-- Form -->
       <form @submit.prevent="handleSubmit" class="space-y-4">
         <div>
           <label class="block text-sm font-medium text-gray-600 mb-1">Email</label>
@@ -72,7 +70,6 @@
         </button>
       </form>
 
-      <!-- Toggle Mode -->
       <p class="text-center text-sm mt-4 text-gray-600">
         {{ isSignUp ? 'Already have an account?' : "Don't have an account?" }}
         <button
@@ -128,13 +125,11 @@ async function handleSubmit() {
     console.log('Authentication successful:', response)
 
     if (isSignUp.value) {
-      // Si fue registro exitoso, cambia a modo login
       isSignUp.value = false
       router.replace({ path: '/signin', query: { mode: 'signin' } })
       success.value = 'Account created! You can now sign in.'
       password.value = ''
     } else {
-      // Si fue login exitoso, guarda el token en el estado global y redirige a Landing
       if (response.token) {
         localStorage.setItem('token', response.token)
         authState.token = response.token
